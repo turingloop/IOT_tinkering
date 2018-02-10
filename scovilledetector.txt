@@ -1,0 +1,62 @@
+const int yellowSwitch = D3;//switch variable
+const int led = D0;//led variable
+const int TMP = A0;//temperature sensor
+double voltage;
+double celsius, fahr, kelvin, base;
+int state = 1;//variable for recording button press
+int timelastpressed;//delay 1 second
+int timepassed = 0;//time variable for printing every second
+
+void setup() {
+    pinMode(led, OUTPUT);//setting led to output
+    pinMode(TMP, AN_INPUT);//reading mode for temp sensor
+    pinMode(yellowSwitch, INPUT_PULLUP);
+    Serial.begin(9600);//initialises serial connection
+    timelastpressed = Time.now();
+    voltage = analogRead(TMP)/4095.0 * 3.3;//reading from temp sensor
+    base = (104.7*voltage) - 53.1;//setting the base temperature
+    analogWrite(A0, 0);
+}
+
+void loop() {
+    voltage = analogRead(TMP)/4095.0 * 3.3;
+    celsius = (104.7*voltage) - 53.1;
+    if(celsius - base == 0){
+        analogWrite(led, 0);
+    } else if (celsius - base > 1){
+        analogWrite(led, 128);
+    } else if(celsius - base > 2){
+        analogWrite(led, 255);
+    } else {
+        analogWrite(led, 0);
+    }
+    if(digitalRead(yellowSwitch)==LOW && Time.now() - timelastpressed >= 1){
+        state++;
+        if(state>3){
+            state=1;
+        }
+        if(state == 1){
+            Serial.println("Temperature in celsius: " + String(celsius));
+        } else if(state == 2){
+            fahr = (celsius-32)*5/9;
+            Serial.println("Temperature in fahrenheit: " + String(fahr));
+        } else if(state == 3){
+            kelvin = celsius + 273.15;
+                Serial.println("Temperature in kelvin: " + String(kelvin));
+        }
+        timelastpressed = Time.now();
+    }
+    if(Time.now() - timepassed >= 1){
+        if(state == 1){
+            Serial.println("Temperature in celsius: " + String(celsius));
+        } else if(state == 2){
+            fahr = (celsius-32)*5/9;
+            Serial.println("Temperature in fahrenheit: " + String(fahr));
+        } else if(state == 3){
+            kelvin = celsius + 273.15;
+                Serial.println("Temperature in kelvin: " + String(kelvin));
+        }
+        timepassed = Time.now();
+    }        
+     
+}

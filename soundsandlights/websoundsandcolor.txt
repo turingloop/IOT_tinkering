@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-us">
+ 
+<head>
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+    <script>
+        let deviceID = '2e0037000347353138383138';
+        let access_token = '5e9a9953ba526d9606d282f8211f409d421332cd'
+ 
+ 
+        function lightUp() {
+            var color = $('#changeColor').val();
+            let root = 'https://api.particle.io/v1/devices/'+deviceID+'/colorfunc';
+            console.log('color entered: '+color);
+            $.post(root, {params: color,access_token: access_token});
+        }
+ 
+        function playSomething() {
+               var note = $('#playSong').val();
+                let root = 'https://api.particle.io/v1/devices/'+deviceID+'/soundbuzz';
+                console.log('color entered: '+note);
+                $.post(root, {params: note,access_token: access_token});
+        }
+    </script>
+</head>
+<body>
+                <form>
+                <button class="btn btn-primary" onclick="lightUp()">Light 'Em Up</button>
+                <input type="text" class="form-control" id="changeColor" placeholder="Enter color"><br>
+                <button class="btn btn-warning" onclick="playSomething()">Play Song</button>
+                <input type="text" class="form-control" id="playSong" placeholder="Enter note">
+   
+                </form>
+ 
+ 
+</body>
+</html>
+

@@ -1,0 +1,114 @@
+//program to turn lights on and make buzzer buzz using exposed functions.
+
+int red = A0;
+int blue = D1;
+int green = D2;
+int buzzer = A5;
+int freq[] = {220,247,262,294,330,350,392};//sound frequencies
+int tonenum=0;
+int duration = 200;//keeps track of duration
+
+int buzzkill(String message);//buzzer function
+void turnoff();//turns off all lights
+int lights(String command);//controls lights based on input.
+
+//setup function
+void setup() {
+    pinMode(red, OUTPUT);
+    pinMode(blue, OUTPUT);
+    pinMode(green, OUTPUT);
+    pinMode(buzzer, OUTPUT);
+    Particle.function("colorfunc", lights);
+    Particle.function("soundbuzz", buzzkill);
+}
+
+void loop() {
+
+}
+
+//function for turning the lights on and off
+int lights(String command){
+    if(command == "white" || command == NULL){
+        digitalWrite(red, HIGH);
+        digitalWrite(blue, HIGH);
+        digitalWrite(green, HIGH);
+    }
+    else if(command == "red"){//turns red
+        turnoff();
+        digitalWrite(red, HIGH);
+    }
+    else if(command == "blue"){//turn blue
+        turnoff();
+        digitalWrite(blue, HIGH);
+    }
+    else if(command == "green"){//turns green
+        turnoff();
+        digitalWrite(green, HIGH);
+    }
+    else if(command == "purple"){//turns purple
+        turnoff();
+        digitalWrite(red, HIGH);
+        digitalWrite(blue, HIGH);
+    }
+    else if(command == "turqoise"){//turns turqoise
+        turnoff();
+        digitalWrite(green, HIGH);
+        digitalWrite(blue, HIGH);
+    }
+    else if(command == "black"){//turns black
+        turnoff();
+    }
+    else if(command == "yellow"){//turns yellow
+        turnoff();
+        digitalWrite(red, HIGH);
+        digitalWrite(green, HIGH);
+    }else{
+        tone(buzzer, 220, 1000);//buzzes
+    }
+    
+}
+//function to use the buzzer to play music based on different frequencies.
+int buzzkill(String message){
+    for(int i = 0; i < message.length(); i+=2){
+        if(message[i]=='A'){
+            tonenum=0;
+        }
+        if(message[i]=='B'){
+            tonenum=1;
+        }
+        if(message[i]=='C'){
+            tonenum=2;
+        }
+        if(message[i]=='D'){
+            tonenum=3;
+        }
+        if(message[i]=='E'){
+            tonenum=4;
+        }
+        if(message[i]=='F'){
+            tonenum=5;
+        }
+        if(message[i]=='G'){
+            tonenum=6;
+        }
+        if(message[i+1]==1){
+            duration=400;
+        }
+        if(message[i+1]==2){
+            duration=200;
+        }
+        if(message[i+1]==4){
+            duration=100;
+        }
+        
+        tone(buzzer, freq[tonenum], duration);//buzzes based on frequency and duration
+        delay(200);
+        noTone(buzzer);//stopps buzzing
+    }
+}
+//function that just turns off the lights.
+void turnoff(){
+    digitalWrite(red, LOW);
+    digitalWrite(blue, LOW);
+    digitalWrite(green, LOW);
+}
